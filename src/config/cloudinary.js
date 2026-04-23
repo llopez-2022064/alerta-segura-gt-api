@@ -7,4 +7,14 @@ cloudinary.config({
     secure: true
 })
 
-console.log(cloudinary.config())
+export const uploadFile = (buffer, folder = process.env.CLOUDINARY_FOLDER) => {
+    return new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+            { folder, resource_type: 'auto' },
+            (error, result) => {
+                if (error) reject(error)
+                else resolve(result.secure_url)
+            }
+        ).end(buffer)
+    })
+}

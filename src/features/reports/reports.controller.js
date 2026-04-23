@@ -4,12 +4,15 @@ export const createReportController = async (req, res, next) => {
     try {
         const userIp = req.ip
 
-        const savedReport = await createReport(req.body, userIp)
+        const savedReport = await createReport(req.body, userIp, req.files)
 
         return res.status(201).send({ message: "Tu reporte ha sido recibido. Gracias por ayudar a mantener Guatemala más segura." })
 
     } catch (error) {
-        return res.status(500).send({ message: "Ocurrió un error, intenta de nuevo, por favor." })
+        if (error.message.includes('validation')) {
+            return res.status(400).send({ message: error.message })
+        }
+        return res.status(500).send({ message: "Ocurrió un error, intenta de nuevo." })
     }
 }
 

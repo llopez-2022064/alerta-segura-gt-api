@@ -1,13 +1,25 @@
 import { DEPARTMENTS, MUNICIPALITIES } from "../../../constants/locations.js";
 
 export function validateLocation(req, res, next) {
-    const { departmentId, municipalityId } = req.body.location
+    if (typeof req.body.location === "string") {
+        try {
+            req.body.location = JSON.parse(req.body.location);
+        } catch (e) {
+            return res.status(400).send({ message: "El campo location no es un JSON válido" });
+        }
+    }
 
-    const department = DEPARTMENTS.find(depart => depart.id == departmentId)
-    if (!department) return res.status(400).send({ message: 'Departamento inválido' })
+    if (!req.body.location) {
+        return res.status(400).send({ message: "El campo location es requerido" });
+    }
 
-    const municipality = MUNICIPALITIES[departmentId]?.find(muni => muni.id == municipalityId)
-    if (!municipality) return res.status(400).send({ message: 'Municipio  inválido' })
+    const { departmentId, municipalityId } = req.body.location;
 
-    next()
+    const department = DEPARTMENTS.find(depart => depart.id == departmentId);
+    if (!department) return res.status(400).send({ message: "Departamento inválido" });
+
+    const municipality = MUNICIPALITIES[departmentId]?.find(muni => muni.id == municipalityId);
+    if (!municipality) return res.status(400).send({ message: "Municipio inválido" });
+
+    next();
 }

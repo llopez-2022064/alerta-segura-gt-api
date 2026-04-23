@@ -1,16 +1,23 @@
 import Report from './reports.model.js'
 import { GoogleGenAI } from '@google/genai'
 import crypto from 'crypto'
+import { v2 as cloudinary } from 'cloudinary'
 import { validateCreateReport } from './reports.validation.js'
 import { buildIncidentPrompt } from './incidentPrompt.js'
+import { upload } from './middlewares/upload.js'
+import { uploadFile } from '../../config/cloudinary.js'
 
-export const createReport = async (reportData, ip) => {
+export const createReport = async (reportData, ip, files) => {
     const { error } = validateCreateReport(reportData)
 
     if (error) {
         const errorMessage = error.details.map(detail => detail.message).join(', ')
         throw new Error(errorMessage)
     }
+
+    const mediasUrls = files?.length > 0
+        ? await Promise.all(files.map((file) => uploadFile(file.buffer)))
+        : []
 
     const newReport = new Report({
         ...reportData,
