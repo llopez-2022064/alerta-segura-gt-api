@@ -21,6 +21,7 @@ export const createReport = async (reportData, ip, files) => {
 
     const newReport = new Report({
         ...reportData,
+        media: mediasUrls,
         ipHash: ip ? hashIp(ip) : null,
         status: 'pending',
         reportedAt: new Date()
