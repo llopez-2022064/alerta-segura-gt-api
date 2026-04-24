@@ -9,8 +9,8 @@ export const createReportController = async (req, res, next) => {
         return res.status(201).send({ message: "Tu reporte ha sido recibido. Gracias por ayudar a mantener Guatemala más segura." })
 
     } catch (error) {
-        if (error.message.includes('validation')) {
-            return res.status(400).send({ message: error.message })
+        if (error.statusCode) {
+            return res.status(error.statusCode).send({ message: error.message })
         }
         return res.status(500).send({ message: "Ocurrió un error, intenta de nuevo." })
     }

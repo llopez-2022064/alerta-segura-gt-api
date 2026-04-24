@@ -12,7 +12,9 @@ export const createReport = async (reportData, ip, files) => {
 
     if (error) {
         const errorMessage = error.details.map(detail => detail.message).join(', ')
-        throw new Error(errorMessage)
+        const validationError = new Error(errorMessage)
+        validationError.statusCode = 400
+        throw validationError
     }
 
     const mediasUrls = files?.length > 0
