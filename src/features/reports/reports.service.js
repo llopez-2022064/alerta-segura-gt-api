@@ -92,6 +92,10 @@ export const getReports = async () => {
     return await Report.find().select('-ipHash')
 }
 
+export const getReportById = async (id) => {
+    return await Report.findById(id).select('-ipHash')
+}
+
 export const getReportsByTypeWithPercentage = async () => {
 
     return await Report.aggregate([

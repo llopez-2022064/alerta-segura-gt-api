@@ -1,4 +1,4 @@
-import { createReport, getDangerStatsByDepartament, getReports, getReportsByTypeWithPercentage } from "./reports.service.js";
+import { createReport, getDangerStatsByDepartament, getReportById, getReports, getReportsByTypeWithPercentage } from "./reports.service.js";
 
 export const createReportController = async (req, res, next) => {
     try {
@@ -21,6 +21,20 @@ export const getReportsController = async (req, res) => {
         const response = await getReports()
 
         return res.status(200).send(response)
+    } catch (error) {
+        return res.status(500).send({ message: "Ocurrió un error, intenta de nuevo, por favor." })
+    }
+}
+
+export const getReportByIdController = async (req, res) => {
+    try {
+        const report = await getReportById(req.params.id)
+
+        if (!report) {
+            return res.status(404).send({ message: 'Reporte no encontrado' })
+        }
+
+        return res.status(200).send(report)
     } catch (error) {
         return res.status(500).send({ message: "Ocurrió un error, intenta de nuevo, por favor." })
     }
