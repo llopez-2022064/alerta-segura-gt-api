@@ -7,8 +7,8 @@ const api = Router()
 
 api.post('/', [upload.array('media'), validateLocation], createReportController)
 api.get('/', getReportsController)
-api.get('/:id', getReportByIdController)
 api.get('/by-department', getDangerStatsByDepartamentController)
 api.get('/by-type', getReportsByTypeWithPercentageController)
+api.get('/:id', getReportByIdController)
 
 export default api
