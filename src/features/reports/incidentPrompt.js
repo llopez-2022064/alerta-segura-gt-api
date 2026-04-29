@@ -45,7 +45,7 @@ export const buildIncidentPrompt = ( title, description, type ) => {
                 "classificationCorrect": true | false,
                 "scoreGeneral": 0 - 100,
                 "problemsDetected": ["lista de problemas específicos"],
-                "summary": "Resumen del reporte (explicación corta del reporte, brindando unicamente datos importantes)",
+                "summary": "Resumen del reporte (explicación corta del reporte, brindando únicamente datos importantes y sin utilizar tecnicismos)",
                 "spam_score": 0-100
                 "flags": "possible_spam | offensive_language | too_vague | inconsistent"
             }
@@ -56,9 +56,9 @@ export const buildIncidentPrompt = ( title, description, type ) => {
             * No inventes información
             * Si falta información, indícalo
             * Penaliza contradicciones y ambigüedad
-            * Responde SOLO en JSON
             * Responde únicamente con un objeto JSON válido.
             * No incluyas texto antes ni después del JSON.
             * No uses comillas invertidas
+            * Si el usuario indica que la información es parcial, incompleta o no está seguro (por ejemplo: solo vi una parte, no estoy seguro, alcancé a ver algunos dígitos), debes reflejar esa incertidumbre explícitamente en la respuesta. No debes asumir ni completar información faltante. Usa expresiones como parcialmente visible, no se logró observar completamente o información incompleta.
     `
 }
