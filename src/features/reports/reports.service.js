@@ -149,6 +149,18 @@ export const getDangerStatsByDepartament = async () => {
     ])
 }
 
+export const getDangerStatsByMunicipality = async () => {
+    return await Report.aggregate([
+        {
+            $group: {
+                _id: '$location.municipalityId',
+                count: { $sum: 1 }
+            }
+        },
+        { $sort: { count: -1 } }
+    ])
+}
+
 export const getStatistics = async (query) => {
     const actions = {
         total: async () => {
@@ -157,14 +169,18 @@ export const getStatistics = async (query) => {
         getDepartment: async () => {
             const data = await getDangerStatsByDepartament()
             return data.slice(0, 5)
+        },
+        getMunicipalities: async () => {
+            const data = await getDangerStatsByMunicipality()
+            return data.slice(0, 5)
         }
     }
-    
+
     let response = {}
 
     for (const key in query) {
         const value = query[key]
-        
+
         const isValid = value === 'true'
 
         if (isValid) {
