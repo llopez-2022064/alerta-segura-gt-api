@@ -3,7 +3,7 @@ import { GoogleGenAI } from '@google/genai'
 import crypto from 'crypto'
 import { v2 as cloudinary } from 'cloudinary'
 import { validateCreateReport } from './reports.validation.js'
-import { buildIncidentPrompt } from './incidentPrompt.js'
+import { buildIncidentPrompt } from './reports.prompt.js'
 import { upload } from './middlewares/upload.js'
 import { uploadFile } from '../../config/cloudinary.js'
 
