@@ -138,7 +138,6 @@ export const getReportsByTypeWithPercentage = async () => {
 
 export const getDangerStatsByDepartament = async () => {
     return await Report.aggregate([
-        { $match: { status: 'approved' } },
         {
             $group: {
                 _id: '$location.departmentId',
@@ -148,4 +147,30 @@ export const getDangerStatsByDepartament = async () => {
         },
         { $sort: { count: -1 } }
     ])
+}
+
+export const getStatistics = async (query) => {
+    const actions = {
+        total: async () => {
+            return Report.countDocuments()
+        },
+        getDepartment: async () => {
+            const data = await getDangerStatsByDepartament()
+            return data.slice(0, 5)
+        }
+    }
+    
+    let response = {}
+
+    for (const key in query) {
+        const value = query[key]
+        
+        const isValid = value === 'true'
+
+        if (isValid) {
+            response[key] = await actions[key]();
+        }
+    }
+
+    return response
 }
