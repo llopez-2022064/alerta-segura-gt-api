@@ -165,6 +165,21 @@ export const getCriticalAlerts = async () => {
     return await Report.countDocuments({ severity: { $gte: 8 } })
 }
 
+export const getReportsToday = async () => {
+    const startOfDay = new Date()
+    startOfDay.setHours(0, 0, 0, 0)
+
+    const endOfDay = new Date()
+    endOfDay.setHours(23, 59, 59, 999)
+
+    return await Report.countDocuments({
+        reportedAt: {
+            $gte: startOfDay,
+            $lte: endOfDay,
+        }
+    })
+}
+
 export const getStatistics = async (query) => {
     const actions = {
         total: async () => {
@@ -180,6 +195,9 @@ export const getStatistics = async (query) => {
         },
         getCriticalAlerts: async () => {
             return await getCriticalAlerts()
+        },
+        getReportsToday: async () => {
+            return await getReportsToday()
         }
     }
 
