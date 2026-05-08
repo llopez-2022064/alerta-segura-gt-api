@@ -201,6 +201,65 @@ export const getDailyAverage = async () => {
     return (total / days).toFixed(1)
 }
 
+export const getReportsByPeriod = async () => {
+    const result = await Report.aggregate([
+        {
+            $group: {
+                _id: {
+                    $cond: {
+                        if: { $lt: [{ $hour: '$reportedAt' }, 6] },
+                        then: 'madrugada',
+                        else: {
+                            $cond: {
+                                if: { $lt: [{ $hour: '$reportedAt' }, 12] },
+                                then: 'mañana',
+                                else: {
+                                    $cond: {
+                                        if: { $lt: [{ $hour: '$reportedAt' }, 18] },
+                                        then: 'tarde',
+                                        else: 'noche'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                total: { $sum: 1 }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                periodos: { $push: { periodo: '$_id', total: '$total' } },
+                grandTotal: { $sum: '$total' }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                periodos: {
+                    $map: {
+                        input: '$periodos',
+                        as: 'p',
+                        in: {
+                            periodo: '$$p.periodo',
+                            total: '$$p.total',
+                            porcentaje: {
+                                $round: [
+                                    { $multiply: [{ $divide: ['$$p.total', '$grandTotal'] }, 100] },
+                                    1
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ])
+
+    return result[0]?.periodos ?? []
+}
+
 export const getStatistics = async (query) => {
     const actions = {
         total: async () => {
@@ -222,7 +281,10 @@ export const getStatistics = async (query) => {
         },
         getDailyAverage: async () => {
             return await getDailyAverage()
-        }
+        },
+        getReportsByPeriod: async () => {
+            return await getReportsByPeriod()
+        },
     }
 
     let response = {}
