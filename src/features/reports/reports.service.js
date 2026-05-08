@@ -180,6 +180,27 @@ export const getReportsToday = async () => {
     })
 }
 
+export const getDailyAverage = async () => {
+    const result = await Report.aggregate([
+        {
+            $group: {
+                _id: null,
+                total: { $sum: 1 },
+                firstReport: { $min: '$reportedAt' }
+            }
+        }
+    ])
+
+    if (!result[0]) return 0
+
+    const { total, firstReport } = result[0]
+    const days = Math.max(1, Math.ceil(
+        (Date.now() - new Date(firstReport)) / (1000 * 60 * 60 * 24)
+    ))
+
+    return (total / days).toFixed(1)
+}
+
 export const getStatistics = async (query) => {
     const actions = {
         total: async () => {
@@ -198,6 +219,9 @@ export const getStatistics = async (query) => {
         },
         getReportsToday: async () => {
             return await getReportsToday()
+        },
+        getDailyAverage: async () => {
+            return await getDailyAverage()
         }
     }
 
