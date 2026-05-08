@@ -161,10 +161,14 @@ export const getDangerStatsByMunicipality = async () => {
     ])
 }
 
+export const getCriticalAlerts = async () => {
+    return await Report.countDocuments({ severity: { $gte: 8 } })
+}
+
 export const getStatistics = async (query) => {
     const actions = {
         total: async () => {
-            return Report.countDocuments()
+            return await Report.countDocuments()
         },
         getDepartment: async () => {
             const data = await getDangerStatsByDepartament()
@@ -173,6 +177,9 @@ export const getStatistics = async (query) => {
         getMunicipalities: async () => {
             const data = await getDangerStatsByMunicipality()
             return data.slice(0, 5)
+        },
+        getCriticalAlerts: async () => {
+            return await getCriticalAlerts()
         }
     }
 
